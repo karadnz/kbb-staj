@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpSession;
@@ -23,6 +24,7 @@ public class MainController
 {
 
 
+    final RestTemplate restTemplate;
 
     @GetMapping("/")
     public String index()
@@ -73,28 +75,32 @@ public class MainController
     }
 
 
-    @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable("id") String id, HttpSession session) {
+    @GetMapping("/delete")
+    public String delete(@RequestParam("id") String id, HttpSession session) {
+        // Get token from session
         String token = (String) session.getAttribute("token");
-
-        if (token == null) {
+        if (token == null)
             return "redirect:/login";
-        }
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
 
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> responseEntity = restTemplate.exchange("http://localhost:8092/deleteUser/" + id, HttpMethod.DELETE, entity, String.class);
+        // Perform DELETE request to delete user
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                "http://localhost:8092/deleteUser/" + id,
+                HttpMethod.DELETE,
+                entity,
+                String.class
+        );
 
         if (responseEntity.getStatusCodeValue() == 200) {
-            // Successfully deleted
+            // Handle success
             return "redirect:/dashboard";
         } else {
-            // Deletion failed
-            return "redirect:/dashboard?error=true";
+            // Handle failure
+            return "errorPage"; // Replace with your error page
         }
     }
 

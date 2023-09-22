@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="mytags" tagdir="/WEB-INF/tags" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +13,9 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
+
+<!-- navbar -->
+<mytags:navbar/>
 
 <div class="container">
     <div class="row">
