@@ -91,6 +91,10 @@ public class EmployeeController
             return "redirect:/dashboard";
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Error adding user. Please try again.");
+            //get roles and display
+            List<Role> roles = restTemplate.getForObject("http://localhost:8092/utils/listRoles", List.class);
+            model.addAttribute("roles", roles);
+            model.addAttribute("personDtoAdd", new PersonDtoAdd());  // Assuming you have a PersonDto for the form
             return "addUser";
         }
     }

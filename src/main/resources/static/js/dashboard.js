@@ -38,3 +38,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+function confirmDelete(eId) {
+    const confirmation = confirm('Are you sure you want to delete this user?');
+
+    if (confirmation) {
+        // If the user clicked "OK", proceed to delete the user
+        window.location.href = `/delete?id=${eId}`;
+    } else {
+        // If the user clicked "Cancel", do nothing
+        return false;
+    }
+}

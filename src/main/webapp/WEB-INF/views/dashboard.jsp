@@ -17,9 +17,6 @@
 <!-- navbar -->
 <mytags:navbar/>
 
-
-
-
 <div class="container">
     <div class="d-flex justify-content-between">
         <h1>Customer Dashboard</h1>
@@ -55,7 +52,7 @@
                 <td data-sid="${person.s_id}"><c:out value="${person.s_id}"/></td>
                 <td>
                     <a href="/edit?id=${person.eid}" class="btn btn-warning">Edit</a>
-                    <a href="/delete?id=${person.eid}" class="btn btn-danger">Delete</a>
+                    <a href="#" onclick="confirmDelete(${person.eid})" class="btn btn-danger">Delete</a>
                 </td>
                 <td>
                     <!-- Dropdown placeholder -->
