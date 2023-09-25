@@ -10,11 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
             crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
-
 </head>
 
 <body>
@@ -47,7 +42,6 @@
         </thead>
         <tbody>
 
-        <c:forEach items="${Persons}" var="person">
             <tr>
                 <td data-eid="${person.eid}"><c:out value="${person.eid}"/></td>
                 <td><c:out value="${person.username}"/></td>
@@ -74,15 +68,6 @@
 
                 </td>
             </tr>
-        </c:forEach>
-
-
-
-        <div id="map" style="height: 400px;"></div>
-
-
-
-
 
 
 
@@ -90,7 +75,7 @@
     </table>
 </div>
 
-<script src="js/dashboard.js"></script>
+<script src="js/userdetails.js"></script>
 
 </body>
 </html>

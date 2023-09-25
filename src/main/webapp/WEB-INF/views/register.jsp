@@ -4,13 +4,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Employee Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
             crossorigin="anonymous"></script>
+
 </head>
+
 <body>
 
 <!-- navbar -->
@@ -24,26 +27,59 @@
                 <h2>Register</h2>
 
                 <c:if test="${errors != null}">
-                    <c:forEach items="${errors}" var="error">
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            <strong><c:out value="${error.getField()}"></c:out></strong>
-                            <c:out value="${error.getDefaultMessage()}"></c:out>
+                    <c:forEach items="${errors}" var="item">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong><c:out value="${item.field}"> </c:out></strong>
+                            <c:out value="${item.defaultMessage}"> </c:out>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     </c:forEach>
                 </c:if>
 
-                <!-- Existing Employee -->
-                <h4>Existing Employee</h4>
+                <c:if test="${errorMessage != null}">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error:</strong>
+                        <c:out value="${errorMessage}"> </c:out>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </c:if>
+
                 <div class="mb-3">
-                    <input name="username" class="form-control" type="text" placeholder="username">
+                    <input name="username" class="form-control" type="text" placeholder="Username" />
                 </div>
                 <div class="mb-3">
-                    <input name="password" class="form-control" type="password" placeholder="password">
+                    <input name="name" class="form-control" type="text" placeholder="Name" />
+                </div>
+                <div class="mb-3">
+                    <input name="email" class="form-control" type="email" placeholder="E-mail" />
+                </div>
+                <div class="mb-3">
+                    <input name="password" class="form-control" type="password" placeholder="Password" />
                 </div>
 
+                <!-- Additional dropdowns for Iller, Ilceler, and Sokaklar -->
+                <div class="mb-3">
+                    <select id="illerDropdown" class="form-control">
+                        <option>Select Iller</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <select id="ilcelerDropdown" class="form-control">
+                        <option>Select Ilceler</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <select id="mahallelerDropdown" class="form-control">
+                        <option>Select Mahalleler</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <select name="s_id" id="sokaklarDropdown" class="form-control">
+                        <option>Select Sokaklar</option>
+                    </select>
+                </div>
 
-                <button type="submit" class="btn btn-success">Register</button>
+                <button class="btn btn-primary">Add</button>
             </form>
         </div>
         <div class="col-sm-4"></div>
@@ -52,6 +88,6 @@
 
 
 
-
+<script src="js/register.js"></script>
 </body>
 </html>

@@ -38,6 +38,11 @@ public class MainController
         return "login";
     }
 
+    @GetMapping("/register")
+    public String register() {
+        return "register";
+    }
+
     @PostMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute("currentUser");
@@ -102,6 +107,26 @@ public class MainController
             // Handle failure
             return "errorPage"; // Replace with your error page
         }
+    }
+
+    @GetMapping("/userdetails/{userId}")
+    public String userDetails(@PathVariable String userId, Model model, HttpSession session) {
+        String token = (String) session.getAttribute("token");
+        if (token == null)
+            return "redirect:/login";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+
+        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Person> responseEntity = restTemplate.exchange("http://localhost:8092/utils/userDetail/" + userId, HttpMethod.GET, entity, Person.class);
+
+        Person person = responseEntity.getBody();
+        model.addAttribute("person", person);
+
+        return "userdetails";
     }
 
 
