@@ -58,7 +58,7 @@
                 <td>
                     <a href="/edit?id=${person.eid}" class="btn btn-warning">Edit</a>
                     <a href="#" onclick="confirmDelete(${person.eid})" class="btn btn-danger">Delete</a>
-                    <a href="/userdetails/${person.eid}" class="btn btn-info">Details</a>  <!-- New Details button -->
+                    <a href="#" class="btn btn-info">Details</a>  <!-- href="/userdetails/${person.eid}" -->
                 </td>
                 <td>
                     <!-- Dropdown placeholder -->
