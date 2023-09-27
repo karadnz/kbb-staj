@@ -23,73 +23,95 @@
 <mytags:navbar/>
 
 <div class="container">
-    <div class="d-flex justify-content-between">
-        <h1>Customer Dashboard</h1>
-        <!-- Logout button -->
-        <form action="/addUser" method="get">
-            <button type="submit" class="btn btn-success">Add User</button>
-        </form>
-    </div>
+    <div class="row">
+        <!-- Left Column: User List -->
+        <div class="col-md-6">
+            <h2>User List</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">E-mail</th>
+                    <th scope="col">Details</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${Persons}" var="person">
+                    <tr>
+                        <td><c:out value="${person.eid}"/></td>
+                        <td><c:out value="${person.username}"/></td>
+                        <td><c:out value="${person.email}"/></td>
+                        <td>
+                            <button class="btn btn-info fetchSokakInfoOnClick" data-person-id="${person.eid}">Details</button>
+                        </td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </div>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Username</th>
-            <th scope="col">Name</th>
-            <th scope="col">E-mail</th>
-            <th scope="col">Active</th>
-            <th scope="col">s_id</th>
-            <th scope="col">Actions</th>
-            <th scope="col">Address</th>
+        <!-- Right Column: Detailed User Info and Map -->
+        <div class="col-md-6">
+            <h2>User Details</h2>
+            <div id="map" style="height: 400px;"></div>
 
-        </tr>
-        </thead>
-        <tbody>
-
-        <c:forEach items="${Persons}" var="person">
-            <tr>
-                <td data-eid="${person.eid}"><c:out value="${person.eid}"/></td>
-                <td><c:out value="${person.username}"/></td>
-                <td><c:out value="${person.name}"/></td>
-                <td><c:out value="${person.email}"/></td>
-                <td><c:out value="${person.enable}"/></td>
-                <td data-sid="${person.s_id}"><c:out value="${person.s_id}"/></td>
-                <td>
-                    <a href="/edit?id=${person.eid}" class="btn btn-warning">Edit</a>
-                    <a href="#" onclick="confirmDelete(${person.eid})" class="btn btn-danger">Delete</a>
-                    <a href="#" class="btn btn-info">Details</a>  <!-- href="/userdetails/${person.eid}" -->
-                </td>
-                <td>
-                    <!-- Dropdown placeholder -->
-                    <div id="sokakInfo_${person.eid}" class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle fetchSokakInfoOnClick" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Address Info
-                        </button>
-                        <!-- Dropdown content will be added here -->
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <!-- Content will be populated here -->
-                        </div>
+            <!-- User details under the map -->
+            <div id="detailedUserInfo" class="mt-4 border p-3 rounded">
+                <h3>User Details</h3>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <strong>ID:</strong>
+                        <span id="detailEid"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Username:</strong>
+                        <span id="detailUsername"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Name:</strong>
+                        <span id="detailName"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Email:</strong>
+                        <span id="detailEmail"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Active:</strong>
+                        <span id="detailActive"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>s_id:</strong>
+                        <span id="detailSid"></span>
                     </div>
 
-                </td>
-            </tr>
-        </c:forEach>
+                    <!-- Placeholder for roles -->
+                    <div class="col-md-12 mb-3">
+                        <strong>Roles:</strong>
+                        <ul id="detailRoles"></ul>
+                    </div>
+
+                    <!-- Add other fields as needed in the same pattern -->
+
+                    <div class="d-flex justify-content-end">
+                        <a id="editButton" href="#" class="btn btn-warning mr-2">Edit</a>
+                        <a id="deleteButton" href="#" onclick="return confirmDelete();" class="btn btn-danger">Delete</a>
+                    </div>
+
+                </div>
 
 
-
-        <div id="map" style="height: 400px;"></div>
-
+            </div>
 
 
-
-
-
-
-        </tbody>
-    </table>
+        </div>
+    </div>
 </div>
 
+<script>
+    const userToken = '<%= session.getAttribute("token") %>';
+</script>
 <script src="js/dashboard.js"></script>
 
 </body>

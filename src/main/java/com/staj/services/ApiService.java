@@ -3,6 +3,7 @@ package com.staj.services;
 import com.staj.Utilities.SessionUtils;
 import com.staj.dto.PersonDtoAdd;
 import com.staj.dto.PersonDtoAuth;
+import com.staj.dto.PersonDtoEdit;
 import com.staj.entities.Person;
 import com.staj.entities.Role;
 import org.springframework.http.*;
@@ -163,5 +164,57 @@ public class ApiService {
         // Logic to delete user
         // Return true or false based on success
         return false;
+    }
+
+
+
+    public static boolean editUser(Long userId, PersonDtoEdit personDtoEdit, BindingResult bindingResult,
+                                   Model model, HttpSession session, RestTemplate restTemplate)
+    {
+        if (bindingResult.hasErrors() || !SessionUtils.isAuthenticated(session))
+            return false;
+
+        // Create payload from form data
+        Map<String, Object> payload = getStringObjectMapEdit(personDtoEdit);
+
+        // Setting up headers with token
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + session.getAttribute("token"));
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(payload, headers);
+        String uri = "http://localhost:8092/editUser/" + userId;
+
+        // Call API to add user
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.PUT, entity, String.class);
+            // Check response if necessary and redirect or show a success message
+            return true;
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Error adding user. Please try again.");
+
+            List<Role> roles = restTemplate.getForObject("http://localhost:8092/utils/listRoles", List.class);
+            model.addAttribute("roles", roles);
+            model.addAttribute("personDtoAdd", new PersonDtoAdd());
+            return false;
+        }
+    }
+
+    private static Map<String, Object> getStringObjectMapEdit(PersonDtoEdit PersonDtoEdit) {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("username", PersonDtoEdit.getUsername());
+        payload.put("email", PersonDtoEdit.getEmail());
+        payload.put("name", PersonDtoEdit.getName());
+        payload.put("s_id", PersonDtoEdit.getS_id());
+
+
+        // Construct roles list
+        List<Map<String, Long>> rolesList = new ArrayList<>();
+        for (Long rid : PersonDtoEdit.getRoleRids())
+        {
+            Map<String, Long> roleMap = new HashMap<>();
+            roleMap.put("rid", rid);
+            rolesList.add(roleMap);
+        }
+        payload.put("roles", rolesList);
+        return payload;
     }
 }

@@ -43,7 +43,7 @@ async function fetchSokakInfo(sId, eId, btnElement) {
 });*/
 
 document.addEventListener('DOMContentLoaded', function() {
-    const dropdownButtons = document.querySelectorAll('.fetchSokakInfoOnClick');
+    const detailButtons = document.querySelectorAll('.fetchSokakInfoOnClick');
 
     // Initialize the Leaflet map
     const map = L.map('map').setView([0, 0], 2);
@@ -52,38 +52,77 @@ document.addEventListener('DOMContentLoaded', function() {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    dropdownButtons.forEach(button => {
+    detailButtons.forEach(button => {
         button.addEventListener('click', async function() {
-            const sId = this.closest('tr').querySelector('td[data-sid]').dataset.sid;
-            const eId = this.closest('tr').querySelector('td[data-eid]').dataset.eid;
-            // Fetch the user's name from the table row
-            const userName = this.closest('tr').querySelector('td:nth-child(3)').innerText;
+            const personId = this.getAttribute('data-person-id');
 
-            // Fetch additional address info
+            // Fetch user details by personId
+            const userDetails = await fetchUserDetails(personId);
+
+            const eid = userDetails.eid;
+            document.getElementById('editButton').href = `/editUser/${eid}`;
+            document.getElementById('deleteButton').setAttribute('data-eid', eid); // store the eid in the delete button for use in the confirmDelete function
+
+            const detailedUserInfo = document.getElementById('detailedUserInfo');
+// Now that we have structured HTML, we can directly target the span elements to fill the details
+            document.getElementById('detailEid').innerText = userDetails.eid;
+            document.getElementById('detailUsername').innerText = userDetails.username;
+            document.getElementById('detailName').innerText = userDetails.name;
+            document.getElementById('detailEmail').innerText = userDetails.email;
+            document.getElementById('detailActive').innerText = userDetails.enable;
+            document.getElementById('detailSid').innerText = userDetails.s_id;
+// Populate other fields similarly
+
+            //for roles
+            const rolesList = document.getElementById('detailRoles');
+            rolesList.innerHTML = '';
+
+            // Add each role to the roles list
+            userDetails.roles.forEach(role => {
+                const roleItem = document.createElement('li');
+                roleItem.innerText = role.name;
+                rolesList.appendChild(roleItem);
+            });
+
+
+            // Fetch the address info and update the map
+            const sId = userDetails.s_id;
             const response = await fetch(`http://localhost:8093/address/sokaklar/${sId}`);
             const data = await response.json();
-            fetchSokakInfo(sId, eId, this);
 
             // Fetch coordinates and update the map
             const coordData = await fetchCoordinates(data);
             if (coordData && coordData.lat && coordData.lng) {
                 map.setView([coordData.lat, coordData.lng], 13);
                 L.marker([coordData.lat, coordData.lng]).addTo(map)
-                    .bindPopup(`<b>${userName}, ${data.mahalleAdi}, ${data.ilceAdi}, ${data.ilAdi}</b>`)
+                    .bindPopup(`<b>${userDetails.name}, ${data.mahalleAdi}, ${data.ilceAdi}, ${data.ilAdi}</b>`)
                     .openPopup();
             }
         });
     });
 });
 
+// Add this function to fetch user details
+async function fetchUserDetails(personId) {
+    // Replace the URL with the correct endpoint to fetch user details by personId
+    const response = await fetch(`http://localhost:8092/utils/userDetail/${personId}`, {
+        headers: {
+            'Authorization': `Bearer ${userToken}`
+        }
+    });
+    return await response.json();
+}
 
 
-function confirmDelete(eId) {
+
+function confirmDelete() {
+    const eId = document.getElementById('deleteButton').getAttribute('data-eid');
     const confirmation = confirm('Are you sure you want to delete this user?');
 
     if (confirmation) {
         // If the user clicked "OK", proceed to delete the user
         window.location.href = `/delete?id=${eId}`;
+        return true;
     } else {
         // If the user clicked "Cancel", do nothing
         return false;
